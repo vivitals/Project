@@ -1,0 +1,8 @@
+// Diamond Training interactive features: cart, contact form validation, and gallery support.
+function getCart(){try{return JSON.parse(localStorage.getItem("diamondCart")||"[]");}catch(error){return [];}}
+function saveCart(cart){localStorage.setItem("diamondCart",JSON.stringify(cart));updateCartCount();}
+function updateCartCount(){const count=document.getElementById("cart-count");if(count)count.textContent=getCart().reduce((sum,item)=>sum+item.qty,0);}
+function addToCart(name,price){const cart=getCart();const item=cart.find(product=>product.name===name);if(item)item.qty+=1;else cart.push({name,price:Number(price),qty:1});saveCart(cart);alert(name+" added to your cart.");}
+function clearCart(){saveCart([]);renderCart();}
+function renderCart(){const list=document.getElementById("cart-list");if(!list)return;const cart=getCart();if(!cart.length){list.innerHTML="<p>Your cart is currently empty.</p>";}else{list.innerHTML=cart.map(item=>"<p>"+item.name+" — $"+item.price.toFixed(2)+" × "+item.qty+"</p>").join("");}const total=document.getElementById("cart-total");if(total)total.textContent=cart.length?"Total: $"+cart.reduce((sum,item)=>sum+item.price*item.qty,0).toFixed(2):"";}
+document.addEventListener("DOMContentLoaded",()=>{updateCartCount();renderCart();const form=document.getElementById("contactForm");if(form){form.addEventListener("submit",event=>{event.preventDefault();if(!form.checkValidity()){form.reportValidity();return;}const status=document.getElementById("form-status");status.textContent="Thank you! Your message has been checked. This classroom demo does not send data to a server.";form.reset();});}});
